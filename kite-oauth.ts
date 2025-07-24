@@ -2,12 +2,11 @@ import { KiteConnect } from "kiteconnect";
 
 const apiKey = "mi2mqq8gcak3dprq";
 const apiSecret = "5c1ncu33tlsfwnlvzoytw9d0lht3g6gn";
-const requestToken = "y8odfJeWPutBk3BTzHrSN3453WFS9go9";
+const requestToken = "DtdBaDsTMf4868J1aPNDwQtaPL8h9Ivq";
 let access_token = "RIxCV1JDA4S8gSiS4tFT1JWzg2Ty38DJ"
 
 const kc = new KiteConnect({ api_key: apiKey });
 
-// console.log(kc.getLoginURL())
 
 async function init() {
     try {
