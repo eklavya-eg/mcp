@@ -19,7 +19,7 @@ const access_token = "TxrDVLmdCUsIVUuGaAjsMP4OXVwYgjo7"
 
 const kc = new KiteConnect({api_key: apiKey})
 
-export async function placeOrder(tradingsymbol: string, transaction_type: "BUY" | "SELL", quantity: number) {
+async function placeOrder(tradingsymbol: string, transaction_type: "BUY" | "SELL", quantity: number) {
 // exchange: string, tradingsymbol: string, transaction_type: string, quantity: number, order_type: string, product: string
     try {
         kc.setAccessToken(access_token);
@@ -37,7 +37,14 @@ export async function placeOrder(tradingsymbol: string, transaction_type: "BUY" 
     }
 }
 
-
+async function getHoldings(){
+    const holdings = await kc.getPositions();
+    let allholdings = "";
+    holdings.net.map(holding=>{
+        allholdings+= `stock: ${holding.tradingsymbol} , qty: ${holding.quantity} , currentPrice: ${holding.last_price}\n`
+    })
+    return allholdings
+}
 
 
 
@@ -73,10 +80,25 @@ server.tool("factorial-of-a-number", {
     })
 );
 
+// display portfolio
+server.tool("show-my-portfolio", {
+    title: "Portfolio Holdings",
+    description: "Show complete portfolio. Get all current holding of stocks Trading Symbol, Quantity and Last Price"
+},
+    async () => ({
+        content: [{
+            type: "text", text: String(async () => {
+                const holdings = await getHoldings();
+                return holdings;
+            })
+        }]
+    })
+);
+
 // buy stock
 server.tool("buy-a-stock", {
     title: "Buy Stock",
-    description: "buy a stock by inputting Stock name and quantity",
+    description: "buy a stock by inputting Stock name and Quantity",
     inputSchema: { tradingsymbol: z.string(), quantity: z.number() }
 },
     async ({ tradingsymbol, quantity }) => ({
@@ -92,7 +114,7 @@ server.tool("buy-a-stock", {
 // sell stock
 server.tool("sell-a-stock", {
     title: "Sell Stock",
-    description: "sell a stock by inputting Stock name and quantity",
+    description: "sell a stock by inputting Stock name and Quantity",
     inputSchema: { tradingsymbol: z.string(), quantity: z.number() }
 },
     async ({ tradingsymbol, quantity }) => ({
